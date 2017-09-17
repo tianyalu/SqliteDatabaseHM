@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">SqliteDatabaseHM</string>
+
+    <string name="add">add</string>
+    <string name="delete">delete</string>
+    <string name="update">update</string>
+    <string name="query">query</string>
+    <string name="transfer">转账</string>
+</resources>
