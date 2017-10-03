@@ -7,13 +7,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Toast;
 
+import com.sty.database.adapter.MyListViewAdapter;
 import com.sty.database.bean.InfoBean;
 import com.sty.database.dao.InfoDao;
 import com.sty.database.dao.InfoDao2;
 import com.sty.database.db.BankOpenHelper;
 import com.sty.database.db.MySqliteOpenHelper;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private Context mContext;
@@ -22,8 +26,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button btnDelete;
     private Button btnUpdate;
     private Button btnQuery;
+    private Button btnQueryForShow;
 
     private Button btnTransfer;
+
+    private ListView lvQueryResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +52,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnDelete = (Button) findViewById(R.id.btn_delete);
         btnUpdate = (Button) findViewById(R.id.btn_update);
         btnQuery = (Button) findViewById(R.id.btn_query);
+        btnQueryForShow = (Button) findViewById(R.id.btn_query_for_show);
         btnTransfer = (Button) findViewById(R.id.btn_transfer);
+
+        lvQueryResult = (ListView) findViewById(R.id.lv_query_result);
     }
 
     private void setListeners(){
@@ -53,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnDelete.setOnClickListener(this);
         btnUpdate.setOnClickListener(this);
         btnQuery.setOnClickListener(this);
+        btnQueryForShow.setOnClickListener(this);
         btnTransfer.setOnClickListener(this);
     }
 
@@ -74,6 +85,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_query:
                 queryInfo(mContext);
                 break;
+            case R.id.btn_query_for_show:
+                queryInfo2ForShow(mContext);
+                break;
 
             case R.id.btn_transfer:
                 transaction();
@@ -84,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void addInfo(Context context){
-        InfoDao infoDao = new InfoDao(mContext); //创建一个dao对象做增删改查
+        InfoDao infoDao = new InfoDao(context); //创建一个dao对象做增删改查
 
         InfoBean bean = new InfoBean();
         bean.name = "张三";
@@ -98,12 +112,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void deleteInfo(Context context){
-        InfoDao infoDao = new InfoDao(mContext); //创建一个dao对象做增删改查
+        InfoDao infoDao = new InfoDao(context); //创建一个dao对象做增删改查
         infoDao.delete("张三");
     }
 
     private void updateInfo(Context context){
-        InfoDao infoDao = new InfoDao(mContext); //创建一个dao对象做增删改查
+        InfoDao infoDao = new InfoDao(context); //创建一个dao对象做增删改查
 
         InfoBean bean = new InfoBean();
         bean.name = "张三";
@@ -112,12 +126,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void queryInfo(Context context){
-        InfoDao infoDao = new InfoDao(mContext); //创建一个dao对象做增删改查
+        InfoDao infoDao = new InfoDao(context); //创建一个dao对象做增删改查
         infoDao.query("张三");
     }
 
     private void addInfo2(Context context){
-        InfoDao2 infoDao2 = new InfoDao2(mContext); //创建一个dao对象做增删改查
+        InfoDao2 infoDao2 = new InfoDao2(context); //创建一个dao对象做增删改查
 
         InfoBean bean = new InfoBean();
         bean.name = "张三";
@@ -125,33 +139,44 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         boolean result = infoDao2.add(bean);
 
         if(result){
-            Toast.makeText(mContext, "添加成功", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "添加成功", Toast.LENGTH_SHORT).show();
         }else{
-            Toast.makeText(mContext, "添加失败", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "添加失败", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void deleteInfo2(Context context){
-        InfoDao2 infoDao2 = new InfoDao2(mContext); //创建一个dao对象做增删改查
+        InfoDao2 infoDao2 = new InfoDao2(context); //创建一个dao对象做增删改查
         int del = infoDao2.delete("张三");
-        Toast.makeText(mContext, "成功删除 " + del + " 行", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "成功删除 " + del + " 行", Toast.LENGTH_SHORT).show();
     }
 
     private void updateInfo2(Context context){
-        InfoDao2 infoDao2 = new InfoDao2(mContext); //创建一个dao对象做增删改查
+        InfoDao2 infoDao2 = new InfoDao2(context); //创建一个dao对象做增删改查
 
         InfoBean bean = new InfoBean();
         bean.name = "张三";
         bean.phone = "119";
         int update = infoDao2.update(bean);
-        Toast.makeText(mContext, "成功更新 " + update + " 行", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "成功更新 " + update + " 行", Toast.LENGTH_SHORT).show();
     }
 
     private void queryInfo2(Context context){
-        InfoDao infoDao = new InfoDao(mContext); //创建一个dao对象做增删改查
-        infoDao.query("张三");
+        InfoDao2 infoDao2 = new InfoDao2(context); //创建一个dao对象做增删改查
+        infoDao2.query("张三");
     }
 
+
+    private void queryInfo2ForShow(Context context){
+        InfoDao2 infoDao2 = new InfoDao2(context);
+        ArrayList<InfoBean> arrayList = infoDao2.queryForShow("张三");
+        if(arrayList == null || arrayList.size() < 1){
+            Toast.makeText(context, "Nothing to show!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        MyListViewAdapter adapter = new MyListViewAdapter(mContext, arrayList);
+        lvQueryResult.setAdapter(adapter);
+    }
 
     /**
      * 事务处理

@@ -9,6 +9,8 @@ import android.util.Log;
 import com.sty.database.db.MySqliteOpenHelper;
 import com.sty.database.bean.InfoBean;
 
+import java.util.ArrayList;
+
 /**
  * Created by Administrator on 2017/9/17/0017.
  */
@@ -93,5 +95,34 @@ public class InfoDao2 {
 
         //关闭数据库
         db.close();
+    }
+
+    public ArrayList<InfoBean> queryForShow(String name){
+        SQLiteDatabase db = mySqliteOpenHelper.getReadableDatabase();
+        //table:表名 columns:查询的列名，如果为null代表查询所有列 selection:查询条件
+        //selectionArgs:条件占位符的参数值 groupBy:按什么字段分组 having:分组的条件 orderBy:按什么字段排序
+        Cursor cursor = db.query("info", new String[]{"_id", "name", "phone"}, "name = ?", new String[]{name},
+                null, null, "_id desc");
+        ArrayList<InfoBean> arrayList = null;
+        //解析Cursor中的数据
+        if(cursor != null && cursor.getCount() > 0){//判断cursor中是否存在数据
+            arrayList = new ArrayList<>();
+            //循环遍历结果集，获取每一行的内容
+            while(cursor.moveToNext()){//条件，游标能否定位到下一行
+                //获取数据
+                InfoBean bean = new InfoBean();
+                bean._id = cursor.getInt(0) + "";
+                bean.name = cursor.getString(1);
+                bean.phone = cursor.getString(2);
+                arrayList.add(bean);
+            }
+
+            //关闭结果集
+            cursor.close();
+        }
+        //关闭数据库
+        db.close();
+
+        return arrayList;
     }
 }

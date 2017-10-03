@@ -37,11 +37,23 @@
         android:text="@string/query" />
 
     <Button
+        android:id="@+id/btn_query_for_show"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAllCaps="false"
+        android:text="@string/query_for_show" />
+
+    <Button
         android:id="@+id/btn_transfer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:textAllCaps="false"
         android:text="@string/transfer" />
+
+    <ListView
+        android:id="@+id/lv_query_result"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </LinearLayout>

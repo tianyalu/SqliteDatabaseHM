@@ -5,6 +5,7 @@ package com.sty.database.bean;
  */
 
 public class InfoBean {
+    public String _id;
     public String name;
     public String phone;
 }

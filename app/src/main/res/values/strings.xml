@@ -5,5 +5,6 @@
     <string name="delete">delete</string>
     <string name="update">update</string>
     <string name="query">query</string>
+    <string name="query_for_show">query for show</string>
     <string name="transfer">转账</string>
 </resources>
